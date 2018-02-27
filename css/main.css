@@ -1,0 +1,27 @@
+.hintimage {
+	height: 40%; 
+	width: 40%;
+	border: 2px solid red;
+	padding: 4px;
+	background: black;
+	margin: 10px;
+	-webkit-transition: all 0.2s ease;
+	cursor: pointer;
+}
+
+.hintimage:hover {
+	box-shadow: 0 0 4px #fff, 0 0 6px #fff, 0 0 10px #fff, 0 0 12px #FFDD1B, 0 0 15px #FFDD1B, 0 0 20px #FFDD1B, 0 0 30px #FFDD1B, 0 0 50px #FFDD1B;
+}
+
+#fullimage {
+	height: 85%;
+	width: 85%;
+	border: 2px solid red;
+	padding: 4px;
+	background: black;
+	-webkit-transition: all 0.2s ease;
+}
+
+#fullimagediv {
+	display: none;
+}
