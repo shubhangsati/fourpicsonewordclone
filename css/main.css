@@ -1,10 +1,10 @@
 .hintimage {
 	height: 40%; 
 	width: 40%;
-	border: 2px solid red;
-	padding: 4px;
+	border: 0.1em solid red;
+	padding: 0.2em;
 	background: black;
-	margin: 10px;
+	margin: 0.4em;
 	-webkit-transition: all 0.2s ease;
 	cursor: pointer;
 }
@@ -14,14 +14,51 @@
 }
 
 #fullimage {
-	height: 85%;
-	width: 85%;
-	border: 2px solid red;
-	padding: 4px;
+	height: 81.7%;
+	width: 81.7%;
+	border: 0.1em solid red;
+	padding: 0.2em;
 	background: black;
 	-webkit-transition: all 0.2s ease;
+	margin: 0.4em;
 }
 
 #fullimagediv {
 	display: none;
+}
+
+.blank {
+	font-weight: bold;
+	font-size: 50px;
+	border: 2px solid black;
+	display: inline-block;
+	width: 60px;
+	cursor: pointer;
+}
+
+#hintbutton {
+	 display: inline-block;
+	 float: right;
+	 cursor: pointer;
+}
+
+#hintbutton:hover {
+	color: #FFDD1B;
+	-webkit-text-stroke: 0.1em black;
+}
+
+
+.letter {
+	font-weight: bold;
+	font-size: 40px;
+	border: 2px solid black;
+	display: inline-block;
+	width: 10%;
+	cursor: pointer;
+	background: #222;
+	color: white;
+}
+
+.letter:hover {
+	color: yellow;
 }
