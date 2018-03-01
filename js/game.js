@@ -16,17 +16,26 @@ var options = {
 	0 : true, 1 : true, 2 : true, 3 : true, 4 : true, 5 : true, 6 : true, 7 : true, 8 : true, 9 : true, 10 : true, 11 : true, 12 : true, 13 : true, 14 : true, 15 : true, 16 : true, 17 : true
 }
 
-var blanks = {
+var blanks = {}
 
-}
+var letters = {}
 
-var letters = {
+var freq = {}
 
-}
+var tempfreq = {}
 //
 
 
 function main() {
+	var alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	var answer = leveltoanswers[currentlevel];
+	for (var i = 0; i < 26; ++i) {
+		freq[alphabets[i]] = 0;
+		tempfreq[alphabets[i]] = 0;
+	}
+	for (var i = 0; i < answer.length; ++i)
+		freq[answer[i]] += 1;
+
 	addimages(currentlevel);
 	$(".hintimage").attr("onclick", "viewfullimage(this)");
 	addblanks(currentlevel);
@@ -190,6 +199,7 @@ function addletter(lettertoadd, index) {
 		$(".letter")[index].style.background = "green";
 		blanks[elindex] = index;
 		updatetempanswer();
+		tempfreq[lettertoadd] += 1;
 		if (allfilled())
 			nextmove();
 	}
@@ -205,6 +215,8 @@ function deselect(elindex) {
 	if ($(".blank")[elindex].innerHTML == "_") {
 		return;
 	}
+	var lettertoremove = $(".blank")[elindex].innerHTML;
+	tempfreq[lettertoremove] -= 1;
 	$(".blank")[elindex].innerHTML = "_";
 	var index = blanks[elindex];
 	options[index] = true;
@@ -287,6 +299,19 @@ function getRandomLetter() {
 }
 
 function addhint(lettertoadd, index, position) {
+	var answer = leveltoanswers[currentlevel];
+	if (tempfreq[lettertoadd] == freq[lettertoadd]) {
+		var firstfoundat;
+		for (var i = 0; i < answer.length; ++i) {
+			if ($(".blank")[i].innerHTML == lettertoadd) {
+				firstfoundat = i;
+				break;
+			}
+		}
+
+		deselect(firstfoundat);
+	}
+
 	var element = $(".blank")[position];
 	var elindex = position;
 	element.innerHTML = lettertoadd;
