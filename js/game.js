@@ -8,6 +8,7 @@ var leveltoanswers = {
 
 var currentlevel = 1;
 var tempanswer = leveltoanswers[currentlevel];
+var noofhints = 2;
 //
 
 //
@@ -239,6 +240,8 @@ function nextmove() {
 		letters = {
 		}
 
+		noofhints = 2;
+
 		main();
 	}
 
@@ -301,6 +304,9 @@ function addhint(lettertoadd, index, position) {
 }
 
 function hint() {
+	if (noofhints <= 0) {
+		return;
+	}
 	var grl = getRandomLetter();
 	console.log(grl);
 	//console.log(grl);
@@ -309,6 +315,7 @@ function hint() {
 	var index = findlast(letter);
 	//console.log(index);
 	var elindex = addhint(letter, index, position);
+	noofhints -= 1;
 }
 
 //END
