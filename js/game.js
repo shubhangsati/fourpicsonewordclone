@@ -2,10 +2,12 @@
 var leveltoanswers = {
 	1 : "ELON",
 	2 : "SUMMER",
-	3 : "NOTE"
+	3 : "NOTE",
+	4 : "BAND"
 }
 
 var currentlevel = 1;
+var tempanswer = leveltoanswers[currentlevel];
 //
 
 //
@@ -14,6 +16,10 @@ var options = {
 }
 
 var blanks = {
+
+}
+
+var letters = {
 
 }
 //
@@ -75,10 +81,10 @@ function addblanks(level) {
 	$("#blanks").empty();
 	var answer = leveltoanswers[level];
 	for (var i = 0; i < answer.length; ++i) {
-		$("#blanks").append("<span class='blank'>_</span>");
+		$("#blanks").append("<span class='blank' onclick='deselect(\"" + i + "\")'>_</span>");
 		blanks[i] = null;
 	}
-	$("#blanks").append("<div id='hintbutton'><i class='fas fa-lightbulb' style='font-size: 60px;'></i></div><br><br>")
+	$("#blanks").append("<div id='hintbutton' onclick='hint(" + level + ")'><i class='fas fa-lightbulb' style='font-size: 60px;'></i></div><br><br>")
 }
 //END
 
@@ -88,6 +94,9 @@ function addblanks(level) {
 //START
 function addoptions(level) {
 	var s = createstring(level);
+	for (var i = 0; i < 18; ++i) {
+		letters[i] = s[i];
+	}
 	$("#letters").empty();
 	for (var i = 0; i < 9; ++i)
 		$("#letters").append("<span class='letter' onclick='addletter(\"" + s[i] + "\", " + i + ")'>" + s[i] + "</span>");
@@ -96,13 +105,13 @@ function addoptions(level) {
 		$("#letters").append("<span class='letter' onclick='addletter(\"" + s[i] + "\", " + i + ")'>" + s[i] + "</span>");
 }
 
-String.prototype.shuffle=function(){
+String.prototype.shuffle = function() {
 
-	var that=this.split("");
-	var len = that.length,t,i
-	while(len){
-		i=Math.random()*len-- |0;
-		t=that[len],that[len]=that[i],that[i]=t;
+	var that = this.split("");
+	var len = that.length, t, i;
+	while(len) {
+		i = Math.random() * len-- | 0;
+		t = that[len], that[len] = that[i], that[i] = t;
 	}
 	return that.join("");
 }
@@ -111,7 +120,12 @@ function createstring(level) {
 	var answer = leveltoanswers[level];
 	var numberremaining = 18 - answer.length;
 	var s = answer;
-	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	var alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	var possible = "";
+	for (var i = 0; i < alphabets.length; ++i) {
+		if (answer.indexOf(alphabets[i]) == -1)
+			possible += alphabets[i];
+	}
 	for (var i = 0; i < numberremaining; ++i)
 		s += possible.charAt(Math.floor(Math.random() * s.length));
 	s = s.shuffle();
@@ -121,6 +135,16 @@ function createstring(level) {
 //END
 
 
+function updatetempanswer() {
+	var answer = leveltoanswers[currentlevel];
+	var s = "";
+	$(".blank").each(function(item, element){
+		if (element.innerHTML == "_") {
+			s += answer[item];
+		}
+	});
+	tempanswer = s;
+}
 
 //To add letters to the submission
 //START
@@ -160,11 +184,38 @@ function addletter(lettertoadd, index) {
 		var elindex = ffv[1];
 		element.innerHTML = lettertoadd;
 		options[index] = false;
+		$(".letter")[index].onclick = null;
+		$(".letter")[index].style.cursor = "not-allowed";
+		$(".letter")[index].style.background = "green";
 		blanks[elindex] = index;
+		updatetempanswer();
 		if (allfilled())
 			nextmove();
 	}
 }
+
+//END
+
+
+//DESELECT a character
+//START
+
+function deselect(elindex) {
+	if ($(".blank")[elindex].innerHTML == "_") {
+		return;
+	}
+	$(".blank")[elindex].innerHTML = "_";
+	var index = blanks[elindex];
+	options[index] = true;
+	$(".letter")[index].onclick = function() {
+		addletter(letters[index], index);
+	};
+	$(".letter")[index].style.cursor = "pointer";
+	$(".letter")[index].style.background = "#222";
+	$(".blank").css("color", "black");
+	updatetempanswer();
+}
+
 //END
 
 
@@ -177,6 +228,17 @@ function addletter(lettertoadd, index) {
 function nextmove() {
 	if (checkifcorrect(currentlevel)) {
 		currentlevel += 1;
+		tempanswer = leveltoanswers[currentlevel];
+		options = {
+			0 : true, 1 : true, 2 : true, 3 : true, 4 : true, 5 : true, 6 : true, 7 : true, 8 : true, 9 : true, 10 : true, 11 : true, 12 : true, 13 : true, 14 : true, 15 : true, 16 : true, 17 : true
+		}
+
+		blanks = {
+		}
+
+		letters = {
+		}
+
 		main();
 	}
 
@@ -192,11 +254,61 @@ function markincorrect() {
 //END
 
 
-//SELECTION DESELECTION
+//HINT
 //START
-function clickoption(element) {
-	var letter = element.innerHTML;
-	addletter(letter);
+
+function findlast(letter) {
+	var index;
+	$(".letter").each(function(item, element) {
+		if (element.innerHTML == letter) {
+			console.log(options[item]);
+			index = item;
+		}
+	});
+	return index;
+}
+
+function getRandomLetter() {
+	var position = Math.floor(Math.random() * tempanswer.length);
+	var letter = tempanswer.charAt(position);
+	tempanswer = tempanswer.substr(0, position) + tempanswer.substr(position + 1, tempanswer.length);
+	var pos;
+	var answer = leveltoanswers[currentlevel];
+	for (var i = 0; i < answer.length; ++i) {
+		if (answer[i] == letter && $(".blank")[i].innerHTML == "_") {
+			pos = i;
+			break;
+		}
+	}
+	return [letter, pos];
+}
+
+function addhint(lettertoadd, index, position) {
+	var element = $(".blank")[position];
+	var elindex = position;
+	element.innerHTML = lettertoadd;
+	options[index] = false;
+	$(".letter")[index].onclick = null;
+	$(".letter")[index].style.cursor = "not-allowed";
+	$(".letter")[index].style.background = "green";
+	blanks[elindex] = index;
+	$(".blank")[elindex].onclick = null;
+	if (allfilled())
+		nextmove();
+	else {
+		return elindex;
+	}
+}
+
+function hint() {
+	var grl = getRandomLetter();
+	console.log(grl);
+	//console.log(grl);
+	var letter = grl[0];
+	var position = grl[1];
+	var index = findlast(letter);
+	//console.log(index);
+	var elindex = addhint(letter, index, position);
 }
 
 //END
