@@ -56,8 +56,6 @@ function getsubmission() {
 
 function checkifcorrect(level) {
 	var submission = getsubmission();
-	console.log(submission + " " + leveltoanswers[level]);
-	console.log(submission == leveltoanswers[level]);
 	if (submission == leveltoanswers[level])
 		return true;
 	return false;
@@ -94,7 +92,8 @@ function addblanks(level) {
 		$("#blanks").append("<span class='blank' onclick='deselect(\"" + i + "\")'>_</span>");
 		blanks[i] = null;
 	}
-	$("#blanks").append("<div id='hintbutton' onclick='hint(" + level + ")'><i class='fas fa-lightbulb' style='font-size: 60px;'></i></div><br><br>")
+	$("#blanks").append("<div id='hintbutton' onclick='hint(" + level + ")'><i class='fas fa-lightbulb' style='font-size: 60px;'></i><br><span id='noofhints'></span></div><br><br>")
+	$("#noofhints")[0].innerHTML = noofhints + " hint(s) remaining";
 }
 //END
 
@@ -240,6 +239,9 @@ function deselect(elindex) {
 //START
 function nextmove() {
 	if (checkifcorrect(currentlevel)) {
+		if (currentlevel == 4) {
+			window.location = "congrats.html";
+		}
 		currentlevel += 1;
 		tempanswer = leveltoanswers[currentlevel];
 		options = {
@@ -276,7 +278,6 @@ function findlast(letter) {
 	var index;
 	$(".letter").each(function(item, element) {
 		if (element.innerHTML == letter) {
-			console.log(options[item]);
 			index = item;
 		}
 	});
@@ -333,7 +334,6 @@ function hint() {
 		return;
 	}
 	var grl = getRandomLetter();
-	console.log(grl);
 	//console.log(grl);
 	var letter = grl[0];
 	var position = grl[1];
@@ -341,6 +341,8 @@ function hint() {
 	//console.log(index);
 	var elindex = addhint(letter, index, position);
 	noofhints -= 1;
+
+	$("#noofhints")[0].innerHTML = noofhints + " hint(s) remaining";
 }
 
 //END
