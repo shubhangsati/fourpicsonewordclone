@@ -148,7 +148,8 @@ function updatetempanswer() {
 	var answer = leveltoanswers[currentlevel];
 	var s = "";
 	$(".blank").each(function(item, element){
-		if (element.innerHTML == "_") {
+		var xxx = element.innerHTML;
+		if (xxx == "_" || xxx != answer[item]) {
 			s += answer[item];
 		}
 	});
@@ -291,7 +292,7 @@ function getRandomLetter() {
 	var pos;
 	var answer = leveltoanswers[currentlevel];
 	for (var i = 0; i < answer.length; ++i) {
-		if (answer[i] == letter && $(".blank")[i].innerHTML == "_") {
+		if (answer[i] == letter && $(".blank")[i].innerHTML != letter) {
 			pos = i;
 			break;
 		}
@@ -311,10 +312,17 @@ function addhint(lettertoadd, index, position) {
 		}
 
 		deselect(firstfoundat);
+		tempfreq[lettertoadd] -= 1;
 	}
 
 	var element = $(".blank")[position];
 	var elindex = position;
+
+	if (element.innerHTML != "_") {
+		var lettertoremove = element.innerHTML;
+		deselect(position);
+	}
+
 	element.innerHTML = lettertoadd;
 	options[index] = false;
 	$(".letter")[index].onclick = null;
@@ -322,6 +330,8 @@ function addhint(lettertoadd, index, position) {
 	$(".letter")[index].style.background = "green";
 	blanks[elindex] = index;
 	$(".blank")[elindex].onclick = null;
+	$(".blank")[elindex].style.cursor = "not-allowed";
+	tempfreq[lettertoadd] += 1;
 	if (allfilled())
 		nextmove();
 	else {
@@ -334,7 +344,7 @@ function hint() {
 		return;
 	}
 	var grl = getRandomLetter();
-	//console.log(grl);
+	console.log(grl);
 	var letter = grl[0];
 	var position = grl[1];
 	var index = findlast(letter);
