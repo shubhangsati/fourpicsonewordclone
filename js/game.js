@@ -182,8 +182,8 @@ function updatetempanswer() {
 
 //To add letters to the submission
 //START
-// check if all blanks are currently filled
 function allfilled() {
+	// check if all blanks are currently filled
 	var isempty = false;
 	$(".blank").each(function(item, element) {
 		if (element.innerHTML == "_")
@@ -193,8 +193,8 @@ function allfilled() {
 	return !isempty;
 }
 
-// find the first empty blank
-function findfirstvacant() {	
+function findfirstvacant() {
+	// find the first empty blank
 	var elementtoreturn;
 	var index;
 	var blanks = document.getElementsByClassName("blank");
